@@ -1,9 +1,11 @@
-# Vision Wormhole: Public Code Release
+#  [The Vision Wormhole: Latent-Space Communication in Heterogeneous Multi-Agent Systems](https://openreview.net/forum?id=xTh4AwVKdw)
 
-Core training and utility code for Vision Wormhole (latent communication in heterogeneous multi-agent VLM systems).
+
+Multi-Agent Systems (MAS) powered by Large Language Models have unlocked advanced collaborative reasoning, yet they remain shackled by the inefficiency of discrete text communication, which imposes significant runtime overhead and information quantization loss. While latent state transfer offers a high-bandwidth alternative, existing approaches either assume homogeneous sender-receiver architectures or rely on pair-specific learned translators, limiting scalability and modularity across diverse model families with disjoint manifolds. In this work, we propose the Vision Wormhole, a novel framework that repurposes the visual interface of Vision-Language Models (VLMs) to enable model-agnostic, text-free communication. By introducing a Universal Visual Codec, we map heterogeneous reasoning traces into a shared continuous latent space and inject them directly into the receiver's visual pathway, effectively treating the vision encoder as a universal port for inter-agent telepathy. Our framework adopts a hub-and-spoke topology to reduce pairwise alignment complexity from O(N^2) to O(N) and leverages a label-free, teacher-student distillation objective to align the high-speed visual channel with the robust reasoning patterns of the text pathway. Extensive experiments across heterogeneous model families (e.g., Qwen-VL, Gemma) demonstrate that the Vision Wormhole reduces end-to-end wall-clock time in controlled comparisons while maintaining reasoning fidelity comparable to standard text-based MAS. 
 
 ![Vision Wormhole teaser](assets/teaser_wormhole_page2.png)
 
+**Note:** *This is an ongoing project. We are actively working on improving the performance, and will include more experiments, baselines, and analyses in the near future. Stay tuned!*
 
 ## Environment Setup
 
@@ -65,4 +67,18 @@ python scripts/preprocess_dataset.py \
   --format jsonl \
   --out data/vision_codec_anchor_text/mixed_custom.jsonl
 ```
+
+## Citation
+```bibtex
+@misc{liu2026vision,
+      title={The Vision Wormhole: Latent-Space Communication in Heterogeneous Multi-Agent Systems}, 
+      author={Xiaoze Liu and Ruowang Zhang and Weichen Yu and Siheng Xiong and Liu He and Feijie Wu and Hoin Jung and Matt Fredrikson and Xiaoqian Wang and Jing Gao},
+      year={2026},
+}
+```
+
+## Acknowledgements
+We thank [Contextual AI](https://contextual.ai) for their support and resources that made this research possible. We also thank the open-source community for providing invaluable tools and datasets that facilitated our experiments. We build our code based on the [LatentMAS](https://github.com/Gen-Verse/LatentMAS) codebase, and we are grateful for their contributions to the field of multi-agent systems. We also thank the developers of the various models and libraries we used in our experiments.
+
+
 
