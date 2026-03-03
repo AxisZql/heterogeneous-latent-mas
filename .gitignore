@@ -12,7 +12,10 @@ env/
 .ipynb_checkpoints/
 # Ignore log files
 *.log
-*.sh
+
+scripts/squash*
+
+
 
 
 
