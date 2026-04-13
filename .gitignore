@@ -21,4 +21,6 @@ scripts/squash*
 
 # DS_Store files (macOS)
 .DS_Store
-
+.idea/
+.vscode/
+CLAUDE.md

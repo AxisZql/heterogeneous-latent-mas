@@ -61,19 +61,25 @@ def _parse_int_csv(raw: str) -> List[int]:
         vals.append(int(p))
     return vals
 
-
+# Optional表示返回值是List或者None
 def _expand_override_list(vals: List[int], n: int, arg_name: str) -> Optional[List[int]]:
     if not vals:
         return None
     if len(vals) == 1 and n > 1:
+        # [5] * 3  →  [5, 5, 5]
         return vals * n
     if len(vals) != n:
         raise ValueError(f"{arg_name} expects either 1 value or {n} values; got {len(vals)}")
     return vals
 
 
+#  raw_or_path ：位置参数 → 可以直接写值
+#  * ：分隔符 → 后面的参数必须用  名字=值  的形式
+#  arg_name ：强制关键字参数 → 必须写  arg_name="xxx"
 def _load_json_object(raw_or_path: str, *, arg_name: str) -> Dict[str, Any]:
+    # raw_or_path如果是None则设置为“”
     payload = str(raw_or_path or "").strip()
+    # 空字符处理
     if not payload:
         return {}
     if os.path.exists(payload):
@@ -84,16 +90,21 @@ def _load_json_object(raw_or_path: str, *, arg_name: str) -> Dict[str, Any]:
         raise ValueError(f"{arg_name} must decode to a JSON object")
     return data
 
-
+# 在视觉编解码器或多模型系统中，虚拟图像常用作占位符、测试输入或初始化数据，确保不同视觉模型接收兼容的输入格式。
+# - @dataclass 是 类装饰器 ，自动为类生成 __init__() 、 __repr__() 、 __eq__() 等方法，简化数据容器的定义。
+# - count: int 和 size: int 是 类型注解 ，声明字段应为整数类型。
+# - 类名以 _ 开头表示 内部私有类 ，不推荐从模块外部直接使用。
 @dataclass
 class _DummyImageSpec:
-    count: int
-    size: int
+    count: int # 虚拟图像数量
+    size: int # 虚拟图像尺寸
 
-
+# Sequence[str] 字符串序列，如["sdxl", "sd15", "flux"]
 def _resolve_dummy_image_specs(model_names: Sequence[str], args: argparse.Namespace) -> Dict[str, _DummyImageSpec]:
     n = len(model_names)
+    # 虚拟图像数
     default_count = max(1, _safe_int(getattr(args, "vision_codec_dummy_image_count", 1), 1))
+    # 图像时正方形：边长
     default_size = max(
         32,
         _safe_int(getattr(args, "vision_codec_dummy_image_size", getattr(args, "vision_dummy_image_size", 224)), 224),
@@ -498,7 +509,8 @@ def _resample_tokens(x: torch.Tensor, target_len: int) -> torch.Tensor:
 
 
 def _apply_affine(U: torch.Tensor, W: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
-                                     
+
+    # 矩阵点乘+偏移量
     return U @ W + b.view(1, 1, -1)
 
 
@@ -1436,6 +1448,7 @@ class VisionLatentMASMethodCODECNew:
         b = self.align_out_b[model_idx]
         if W is None or b is None:
             return U.detach().float().cpu()
+        # 防御性编程：W,b放在同一个设备上，数据类型要求一致
         U_ref = _apply_affine(U, W.to(device=device, dtype=U.dtype), b.to(device=device, dtype=U.dtype))
         return U_ref.detach().float().cpu()
 
